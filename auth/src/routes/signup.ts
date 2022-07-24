@@ -6,6 +6,19 @@ const router = express.Router();
 router.post(
   '/api/users/signup',
   // this body validator is added as a middleware
+  // if there's an error, the validator will
+  // return a response early with the error
+  // message data. The problem is, the error
+  // message data format (type) is decided by
+  // express-validator. In a microservices
+  // architecture, each service might have
+  // a different library for validating data
+  // so we can end up with a lot of different
+  // types for errors. The frontend would have to
+  // know about all those types and acocunt for
+  // them (tight coupling)
+  // we need to standardize our error types/structures
+  // across all our microservices
   [
     body('email').isEmail().withMessage('Email must be valid'),
     body('password')
