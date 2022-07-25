@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { RequestValidationError } from '../errors/request-validation-error';
 import { DatabaseConnectionError } from '../errors/database-connection-error';
+import { CustomError } from '../errors/custom-error';
 
 // we'll use this handler throughout all our microservies
 // so it catches all the errors and normalizez them with
@@ -13,25 +14,9 @@ export const errorHandler = (
   res: Response,
   next: NextFunction
 ) => {
-  if (err instanceof RequestValidationError) {
-    console.log('handling this error as a request validation error');
-
-    // here we are mapping the errors with the RequestValidationError type
-    // into our standard error format which is the following:
-    // {
-    //  errors: {
-    //     message: string,
-    //     field?: string
-    //  }[]
-    // }
-
+  if (err instanceof CustomError) {
     return res.status(err.statusCode).send({ errors: err.serializeErrors() });
   }
-  if (err instanceof DatabaseConnectionError) {
-    // mapping into our standard error format
-    return res.status(err.statusCode).send({ errors: err.serializeErrors() });
-  }
-  const { message } = err;
   // mapping into our standard error format
   res.status(400).send({ errors: [{ message: 'Something went wrong' }] });
 };
