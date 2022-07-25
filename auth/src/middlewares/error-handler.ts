@@ -25,16 +25,11 @@ export const errorHandler = (
     //  }[]
     // }
 
-    const formattedErrors = err.errors.map(error => ({
-      message: error.msg,
-      field: error.param,
-    }));
-
-    return res.status(400).send({ errors: formattedErrors });
+    return res.status(err.statusCode).send({ errors: err.serializeErrors() });
   }
   if (err instanceof DatabaseConnectionError) {
     // mapping into our standard error format
-    return res.status(500).send({ errors: [{ message: err.reason }] });
+    return res.status(err.statusCode).send({ errors: err.serializeErrors() });
   }
   const { message } = err;
   // mapping into our standard error format
