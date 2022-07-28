@@ -33,14 +33,6 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-// add the extended UserModel interface so it accepts our new build method
-const User = mongoose.model<UserDoc, UserModel>('User', userSchema);
-
-new User({
-  email: 'test',
-  password: 'asdfsdaf',
-});
-
 // this is a trick we use to ensure proper type checking with mongo
 // the User constructor won't type check itself so we need to create
 // this function and use this instead of new User directly
@@ -50,13 +42,18 @@ new User({
 //   };
 // and export that but it's nicer to have it packaged
 // into the User object itself so we add it as a method
+// It's important to add this method to userSchema before
+// we create the User object otherwise it'll throw a type error
 userSchema.statics.build = (attrs: UserAttrs) => {
   return new User(attrs);
 };
 
-const user = User.build({
-  email: 'asdfasdf',
-  password: 'dsfasdfsd',
+// add the extended UserModel interface so it accepts our new build method
+const User = mongoose.model<UserDoc, UserModel>('User', userSchema);
+
+new User({
+  email: 'test',
+  password: 'asdfsdaf',
 });
 
 export { User };
