@@ -12,6 +12,9 @@ export class Password {
     // we concatinate the salt at the end of the hash(pass+salt) just to keep the salt
     // in the same place since we need it to generate the hash again when we
     // compare the password the user has supplied.
+    // We could store it separately, as long as it's unique for every user, so
+    // it thraws the rainbow tables
+    // Some people even use the user id as a salt to save a few bites
     return `${buf.toString('hex')}.${salt}`;
   }
 
