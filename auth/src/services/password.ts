@@ -9,6 +9,9 @@ export class Password {
     const salt = randomBytes(8).toString('hex');
     const buf = (await scryptAsync(password, salt, 64)) as Buffer;
 
+    // we concatinate the salt at the end of the hash(pass+salt) just to keep the salt
+    // in the same place since we need it to generate the hash again when we
+    // compare the password the user has supplied.
     return `${buf.toString('hex')}.${salt}`;
   }
 
