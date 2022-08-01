@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { Password } from '../services/password';
 
 // An interface that describes the properties
 // that are required to create a new User
@@ -31,6 +32,25 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+});
+
+// this is a mongoose Schema "hook". It's a cb called before
+// the db saves something.
+// Inside this cb function we get access to the document it's being saved
+// inside the "this" keyword, that's why we need to use the "function"
+// keyword instead of an arrow function
+userSchema.pre('save', async function (done) {
+  // we need to check if the password is modified so we don't
+  // hash it twice in the case we're trying to save a modified user
+  // like when we change an email or some other detail
+  if (this.isModified('password')) {
+    const hashed = await Password.toHash(this.get('password'));
+    this.set('password', hashed);
+  }
+  // mongoose doesn't have very good async await support so
+  // we need to call "done" when we're done with our async await
+  // stuff to let the db know
+  done();
 });
 
 // this is a trick we use to ensure proper type checking with mongo
