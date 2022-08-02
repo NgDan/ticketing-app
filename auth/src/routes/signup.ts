@@ -58,7 +58,7 @@ router.post(
       'asdf'
     );
 
-    // Store it on session object (cookie-parser will detect the session object and automatically serialize the jwt and send it to the users browser as a cookie)
+    // Store it on session object (cookie-parser will detect the session object and automatically serialize it and convert it to cookies and attach them to the request)
     req.session = {
       jwt: userJwt,
     };
