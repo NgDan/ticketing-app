@@ -55,6 +55,10 @@ router.post(
         id: user.id,
         email: user.email,
       },
+      // the token will be signed using this key
+      // the only way to verify if this is a valid
+      // token is with this key, so all the other services
+      // will have to have access to this key
       'asdf'
     );
 
