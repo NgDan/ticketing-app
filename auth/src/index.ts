@@ -51,6 +51,9 @@ app.all('*', async () => {
 app.use(errorHandler);
 
 const start = async () => {
+  if (!process.env.JWT_KEY) {
+    throw new Error('JWT_KEY env variable must be defined');
+  }
   // here we need to pass the url to the mongodb service running in our pod.
   // For that we need to go through the cluster-ip-service that serves
   // as a communication bridge to the service. The domain is defined

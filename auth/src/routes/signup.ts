@@ -59,7 +59,8 @@ router.post(
       // the only way to verify if this is a valid
       // token is with this key, so all the other services
       // will have to have access to this key
-      'asdf'
+      // We also don't need a .env file for this since it's set inside the container by the configuration file
+      process.env.JWT_KEY! // we already typeguard this in index.ts so we can be confident this will be defined and we can use the non-null assertion operator "!"
     );
 
     // Store it on session object (cookie-parser will detect the session object and automatically serialize it and convert it to cookies and attach them to the request)

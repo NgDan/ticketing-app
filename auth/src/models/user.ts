@@ -21,18 +21,33 @@ interface UserDoc extends mongoose.Document {
   password: string;
 }
 
-const userSchema = new mongoose.Schema({
-  email: {
-    // this is the javascript String constructor
-    // not the typescript type string
-    type: String,
-    required: true,
+const userSchema = new mongoose.Schema(
+  {
+    email: {
+      // this is the javascript String constructor
+      // not the typescript type string
+      type: String,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
   },
-  password: {
-    type: String,
-    required: true,
-  },
-});
+  {
+    // this toJSON is a config property that allows us to customize how we JSON.stringify the user model
+    // before stringifying it and sending it back as a HTTP response payload. We don't want to send back the password
+    // and the __v fields and we want to rename the _id field
+    toJSON: {
+      transform(doc, ret) {
+        delete ret.password;
+        delete ret.__v;
+        ret.id = ret._id;
+        delete ret._id;
+      },
+    },
+  }
+);
 
 // this is a mongoose Schema "hook". It's a cb called before
 // the db saves something.
