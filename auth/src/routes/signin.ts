@@ -1,6 +1,10 @@
 import express, { Request, Response } from 'express';
-import { body, validationResult } from 'express-validator';
-import { RequestValidationError } from '../errors/request-validation-error';
+import { body } from 'express-validator';
+import { validateRequest } from '../middlewares/validate-request';
+import { User } from '../models/user';
+import { BadRequestError } from '../errors/bad-request-error';
+import { Password } from '../services/password';
+import jwt from 'jsonwebtoken';
 
 const router = express.Router();
 
@@ -15,12 +19,40 @@ router.post(
       .notEmpty()
       .withMessage('You must supply a password'),
   ],
-  (req: Request, res: Response) => {
-    const errors = validationResult(req);
+  validateRequest,
+  async (req: Request, res: Response) => {
+    const { email, password: suppliedPassword } = req.body;
 
-    if (!errors.isEmpty()) {
-      throw new RequestValidationError(errors.array());
+    const existingUser = await User.findOne({ email });
+
+    if (!existingUser) {
+      throw new BadRequestError('Invalid credentials');
     }
+
+    const passwordsMatch = await Password.compare(
+      existingUser.password,
+      suppliedPassword
+    );
+
+    if (!passwordsMatch) {
+      throw new BadRequestError('Invalid credentials');
+    }
+
+    // Generate JWT
+    const userJwt = jwt.sign(
+      {
+        id: existingUser.id,
+        email: existingUser.email,
+      },
+      process.env.JWT_KEY! // we already typeguard this in index.ts so we can be confident this will be defined and we can use the non-null assertion operator "!"
+    );
+
+    // Store it on session object (cookie-parser will detect the session object and automatically serialize it and convert it to cookies and attach them to the request)
+    req.session = {
+      jwt: userJwt,
+    };
+
+    res.status(200).send(existingUser);
   }
 );
 
