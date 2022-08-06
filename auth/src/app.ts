@@ -28,7 +28,9 @@ app.use(
     // and it's hard for some programming languages to decrypt
     // cookie-session's encryption
     signed: false,
-    secure: true,
+    // only use https (secure: true) in prod, because our test library supertest
+    // uses http
+    secure: process.env.NODE_ENV !== 'test',
   })
 );
 
