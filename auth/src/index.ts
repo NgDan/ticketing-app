@@ -5,6 +5,9 @@ const start = async () => {
   if (!process.env.JWT_KEY) {
     throw new Error('JWT_KEY env variable must be defined');
   }
+  if (!process.env.MONGO_URI) {
+    throw new Error('MONGO_URI env variable must be defined');
+  }
   // here we need to pass the url to the mongodb service running in our pod.
   // For that we need to go through the cluster-ip-service that serves
   // as a communication bridge to the service. The domain is defined
@@ -14,7 +17,7 @@ const start = async () => {
   // connect to inside our cluster. If the db doesn't exist
   // mongodb will create one for us
   try {
-    await mongoose.connect('mongodb://auth-mongo-srv:27017/auth');
+    await mongoose.connect(process.env.MONGO_URI);
     console.log('connected to db');
   } catch (e) {
     console.error(e);
