@@ -13,8 +13,7 @@ import { currentUserRouter } from './routes/current-user';
 import { signinRouter } from './routes/signin';
 import { signoutRouter } from './routes/signout';
 import { signupRouter } from './routes/signup';
-import { errorHandler } from './middlewares/error-handler';
-import { NotFoundError } from './errors/not-found-error';
+import { errorHandler, NotFoundError } from '@ng-ticketing-app/common';
 
 const app = express();
 // we set trust proxy to true because traffic is proxied to our application
