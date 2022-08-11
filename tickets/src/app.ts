@@ -7,9 +7,13 @@ import express from 'express';
 import 'express-async-errors';
 import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
-
-import { errorHandler, NotFoundError } from '@ng-ticketing-app/common';
-
+import { createTicketRouter } from './routes/new';
+import {
+  errorHandler,
+  NotFoundError,
+  currentUser,
+  requireAuth,
+} from '@ng-ticketing-app/common';
 const app = express();
 // we set trust proxy to true because traffic is proxied to our application
 // through nginx and express would block it by default
@@ -28,11 +32,10 @@ app.use(
   })
 );
 
-// app.get('/', (req, res) => {
-//   res.send('hello there');
-// });
+app.use(currentUser);
+app.use(createTicketRouter);
 
-// app.app is a combination of app.get, app.post, app.delete, etc
+// app.all is a combination of app.get, app.post, app.delete, etc
 // it basically responds to any request method
 app.all('*', async () => {
   throw new NotFoundError();
