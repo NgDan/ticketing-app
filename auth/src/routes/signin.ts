@@ -38,6 +38,7 @@ router.post(
     }
 
     // Generate JWT
+    // can probably be extracted to middleware
     const userJwt = jwt.sign(
       {
         id: existingUser.id,
