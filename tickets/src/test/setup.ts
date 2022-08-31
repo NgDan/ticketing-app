@@ -30,10 +30,10 @@ afterAll(async () => {
   await mongoose.connection.close();
 });
 
-export const createSessionCookie = () => {
+export const createSessionCookie = (id = '630fb979da4df5f529949e6f') => {
   // build a JWT payload, { id, email }
   const payload = {
-    id: 'aergfaervq3',
+    id,
     email: 'test@test.com',
   };
 
