@@ -7,7 +7,7 @@ const client = nats.connect('ticketing', 'abc', {
 });
 
 client.on('connect', () => {
-  console.log('publisher conxected to NATS');
+  console.log('publisher connected to NATS');
 
   const data = JSON.stringify({
     id: '123',
