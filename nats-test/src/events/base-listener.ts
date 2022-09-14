@@ -1,7 +1,13 @@
 import { Message, Stan } from 'node-nats-streaming';
+import { Subjects } from './subjects';
 
-export abstract class Listener {
-  abstract subject: string;
+interface Event {
+  subject: Subjects;
+  data: any;
+}
+
+export abstract class Listener<T extends Event> {
+  abstract subject: T['subject'];
   // queue groups tell the streaming service to only send one
   // event to the members of that queue group. This is helpful
   // when we have multiple instances of the same service running
@@ -14,7 +20,7 @@ export abstract class Listener {
   abstract queueGroupName: string;
   private client: Stan;
   protected ackWait = 5 * 1000;
-  abstract onMessage(data: any, msg: Message): void;
+  abstract onMessage(data: T['data'], msg: Message): void;
 
   constructor(client: Stan) {
     this.client = client;
