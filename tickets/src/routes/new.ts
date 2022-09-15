@@ -2,6 +2,8 @@ import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
 import { requireAuth, validateRequest } from '@ng-ticketing-app/common';
 import { Ticket } from '../models/ticket';
+import { TicketCreatedPublisher } from '../events/publishers/ticket-created-publisher';
+import { natsWrapper } from '../nats-wrapper';
 
 const router = express.Router();
 
@@ -25,6 +27,17 @@ router.post(
       userId: req.currentUser!.id,
     });
     await ticket.save();
+
+    new TicketCreatedPublisher(natsWrapper.client).publish({
+      id: ticket.id,
+      // don't use the title from req.body, use the one
+      // from the ticket object saved in the database since we can have
+      // pre/post save hooks on the tickets properties, or the db
+      // call can fail
+      title: ticket.title,
+      price: ticket.price,
+      userId: ticket.userId,
+    });
 
     res.status(201).send(ticket);
   }
