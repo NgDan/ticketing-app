@@ -28,7 +28,7 @@ router.post(
     });
     await ticket.save();
 
-    new TicketCreatedPublisher(natsWrapper.client).publish({
+    await new TicketCreatedPublisher(natsWrapper.client).publish({
       id: ticket.id,
       // don't use the title from req.body, use the one
       // from the ticket object saved in the database since we can have

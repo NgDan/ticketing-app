@@ -24,6 +24,18 @@ const start = async () => {
       'some-random-string-7632547623',
       'http://nats-srv:4222'
     );
+
+    natsWrapper.client.on('close', () => {
+      console.log('NATS connection closed!');
+      // we don't want process.exit inside the class NatsWrapper
+      // because we don't want any method to be able to close our
+      // entire program.
+      process.exit();
+    });
+
+    process.on('SIGINT', () => natsWrapper.client.close());
+    process.on('SIGTERM', () => natsWrapper.client.close());
+
     await mongoose.connect(process.env.MONGO_URI);
     console.log('connected to db');
   } catch (e) {
