@@ -18,11 +18,29 @@ const start = async () => {
   // connect to inside our cluster. If the db doesn't exist
   // mongodb will create one for us
 
+  if (!process.env.NATS_CLIENT_ID) {
+    throw new Error('NATS_CLIENT_ID env variable must be defined');
+  }
+  if (!process.env.NATS_URL) {
+    throw new Error('NATS_URL env variable must be defined');
+  }
+  if (!process.env.NATS_CLUSTER_ID) {
+    throw new Error('NATS_CLUSTER_ID env variable must be defined');
+  }
+
   try {
     await natsWrapper.connect(
-      'ticketing',
-      'some-random-string-7632547623',
-      'http://nats-srv:4222'
+      process.env.NATS_CLUSTER_ID,
+      // NATS_CLIENT_ID needs to be a random ID. We're going to use the
+      // name that kubernetes generates for the pod (k get pods to check
+      // the name) as an id. To make the name of a pod available as an env
+      // variable in kubernetes we use this syntax (check tickets.depl.yaml):
+      // - name: NATS_CLIENT_ID
+      //   valueFrom:
+      //     fieldRef:
+      //       fieldPath: metadata.name
+      process.env.NATS_CLIENT_ID,
+      process.env.NATS_URL
     );
 
     natsWrapper.client.on('close', () => {
