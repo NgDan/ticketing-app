@@ -7,10 +7,10 @@ import express from 'express';
 import 'express-async-errors';
 import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
-import { createTicketRouter } from './routes/new';
-import { showTicketRouter } from './routes/show';
-import { indexTicketRouter } from './routes/index';
-import { updateTicketRouter } from './routes/update';
+import { deleteOrderRouter } from './routes/delete';
+import { showOrderRouter } from './routes/show';
+import { newOrderRouter } from './routes/new';
+import { indexOrderRouter } from './routes/index';
 import {
   errorHandler,
   NotFoundError,
@@ -36,10 +36,10 @@ app.use(
 );
 
 app.use(currentUser);
-app.use(createTicketRouter);
-app.use(showTicketRouter);
-app.use(indexTicketRouter);
-app.use(updateTicketRouter);
+app.use(deleteOrderRouter);
+app.use(indexOrderRouter);
+app.use(newOrderRouter);
+app.use(showOrderRouter);
 
 // app.all is a combination of app.get, app.post, app.delete, etc
 // it basically responds to any request method
