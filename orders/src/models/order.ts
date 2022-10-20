@@ -5,14 +5,14 @@ import { OrderStatus } from '@ng-ticketing-app/common';
 // that will end up on an Order are different from the ones needed to create an Order
 interface OrderAttrs {
   userId: string;
-  status: string;
+  status: OrderStatus;
   expiresAt: Date;
   ticket: TicketDoc;
 }
 
 interface OrderDoc extends mongoose.Document {
   userId: string;
-  status: string;
+  status: OrderStatus;
   expiresAt: Date;
   ticket: TicketDoc;
 }
@@ -30,6 +30,7 @@ const orderSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
+      enum: Object.values(OrderStatus),
     },
     expiresAt: {
       type: mongoose.Schema.Types.Date,
