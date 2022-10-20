@@ -1,5 +1,6 @@
 import mongoose, { mongo } from 'mongoose';
 import { OrderStatus } from '@ng-ticketing-app/common';
+import { TicketDoc } from './ticket';
 
 // we have 2 different interfaces (OrderAttrs and OrderDoc) because the attributes
 // that will end up on an Order are different from the ones needed to create an Order
