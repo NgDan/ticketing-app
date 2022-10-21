@@ -21,11 +21,11 @@ it('fetches orders for a particular user', async () => {
   const ticketTwo = await buildTicket();
   const ticketThree = await buildTicket();
 
-  const id1 = new mongoose.Types.ObjectId().toHexString();
-  const id2 = new mongoose.Types.ObjectId().toHexString();
+  const userOneId = new mongoose.Types.ObjectId().toHexString();
+  const userTwoId = new mongoose.Types.ObjectId().toHexString();
 
-  const userOne = createSessionCookie(id1);
-  const userTwo = createSessionCookie(id2);
+  const userOne = createSessionCookie(userOneId);
+  const userTwo = createSessionCookie(userTwoId);
 
   // create one order as User #1
   await request(app)
