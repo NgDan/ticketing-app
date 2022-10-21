@@ -33,9 +33,9 @@ router.post(
   validateRequest,
   async (req: Request, res: Response) => {
     const { ticketId } = req.body;
-
     // find the ticket the user is trying to order in the database (if we fail to fetch the ticket from the db it means it's already been sold, deleted, etc)
     const ticket = await Ticket.findById(ticketId);
+    // console.log({ ticket });
     if (!ticket) {
       throw new NotFoundError();
     }
@@ -64,8 +64,8 @@ router.post(
     await order.save();
 
     // publish an event to notify an order has been created
-
-    res.send(201).send(order);
+    // console.log(order.userId, order);
+    res.status(201).send(order);
   }
 );
 

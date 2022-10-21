@@ -53,7 +53,7 @@ it('fetches orders for a particular user', async () => {
     .set('Cookie', userTwo)
     .expect(200);
 
-  console.log(responseOne.body);
+  console.log(response.body);
   //   console.log(response.body);
   // make sure we only got the orders for User #2
   expect(response.body.length).toEqual(2);
