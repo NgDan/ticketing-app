@@ -47,10 +47,10 @@ export const createSessionCookie = (id = '630fb979da4df5f529949e6f') => {
   const session = { jwt: token };
 
   // turn session into JSON
-  const sessinoJSON = JSON.stringify(session);
+  const sessionJSON = JSON.stringify(session);
 
   // take JSON and encode it as base64
-  const base64 = Buffer.from(sessinoJSON).toString('base64');
+  const base64 = Buffer.from(sessionJSON).toString('base64');
 
   // return a string that's the cookie with the cookie data
   return [`session=${base64}$`];
