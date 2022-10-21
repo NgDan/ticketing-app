@@ -28,14 +28,14 @@ it('fetches orders for a particular user', async () => {
   const userTwo = createSessionCookie(id2);
 
   // create one order as User #1
-  const responseOne = await request(app)
+  await request(app)
     .post('/api/orders')
     .set('Cookie', userOne)
     .send({ ticketId: ticketOne.id })
     .expect(201);
 
   // create two orders as User #2
-  const responseTwo = await request(app)
+  const { body: orderOne } = await request(app)
     .post('/api/orders')
     .set('Cookie', userTwo)
     .send({ ticketId: ticketTwo.id })
@@ -53,10 +53,10 @@ it('fetches orders for a particular user', async () => {
     .set('Cookie', userTwo)
     .expect(200);
 
-  console.log(response.body);
-  //   console.log(response.body);
   // make sure we only got the orders for User #2
   expect(response.body.length).toEqual(2);
-  //   expect(response.body[0].id).toEqual(orderOne.id);
-  //   expect(response.body[1].id).toEqual(orderTwo.id);
+  expect(response.body[0].id).toEqual(orderOne.id);
+  expect(response.body[1].id).toEqual(orderTwo.id);
+  expect(response.body[0].ticket.id).toEqual(ticketTwo.id);
+  expect(response.body[1].ticket.id).toEqual(ticketThree.id);
 });
