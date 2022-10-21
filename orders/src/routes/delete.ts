@@ -27,6 +27,9 @@ router.delete(
     // if we followed proper REST architecture this DELETE method would've
     // actually deleted the record instead of just marking it as Cancelled
     order.status = OrderStatus.Cancelled;
+    await order.save();
+
+    // publish an event to notify this was cancelled
 
     res.status(204).send(order);
   }
