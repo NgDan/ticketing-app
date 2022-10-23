@@ -20,8 +20,9 @@ export class TicketCreatedListener extends Listener<TicketCreatedEvent> {
     // data is available immediately on request. It also
     // eliminates the need to synchronously call the tickets service
     // for that information
-    const { title, price } = data;
+    const { title, price, id } = data;
     const ticket = Ticket.build({
+      id,
       title,
       price,
     });

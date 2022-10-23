@@ -7,6 +7,7 @@ import { Order, OrderStatus } from './order';
 // from the tickets model, only the attributes relevant to an order.
 
 interface TicketAttrs {
+  id: string;
   title: string;
   price: number;
 }
@@ -43,7 +44,13 @@ const ticketSchema = new mongoose.Schema(
   }
 );
 
-ticketSchema.statics.build = (attrs: TicketAttrs) => new Ticket(attrs);
+ticketSchema.statics.build = (attrs: TicketAttrs) =>
+  new Ticket({
+    // we need to save the id as _id otherwise mongo will assign this record its own _id
+    _id: attrs.id,
+    title: attrs.title,
+    price: attrs.price,
+  });
 
 // important! this should not be an arrow function
 ticketSchema.methods.isReserved = async function () {
