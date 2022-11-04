@@ -13,7 +13,10 @@ export class TicketUpdatedListener extends Listener<TicketUpdatedEvent> {
   queueGroupName = queueGroupName;
 
   async onMessage(data: TicketUpdatedEvent['data'], msg: Message) {
-    const ticket = await Ticket.findById(data.id);
+    const ticket = await Ticket.findOne({
+      _id: data.id,
+      version: data.version - 1,
+    });
 
     if (!ticket) {
       throw new Error('Ticket now found');
@@ -21,6 +24,8 @@ export class TicketUpdatedListener extends Listener<TicketUpdatedEvent> {
 
     const { title, price } = data;
     ticket.set({ title, price });
+
+    // when saving, mongoose-update-if-current will automatically increase the version number
     await ticket.save();
 
     msg.ack();
