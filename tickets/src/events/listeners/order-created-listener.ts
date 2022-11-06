@@ -5,6 +5,8 @@ import {
 } from '@ng-ticketing-app/common';
 import { Message } from 'node-nats-streaming';
 import { Ticket } from '../../models/ticket';
+import { natsWrapper } from '../../nats-wrapper';
+import { TicketUpdatedPublisher } from '../publishers/ticket-updated-publisher';
 import { queueGroupName } from './queue-group-name';
 
 export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
@@ -25,6 +27,9 @@ export class OrderCreatedListener extends Listener<OrderCreatedEvent> {
 
     // save the ticket
     await ticket.save();
+
+    // raise event to let any service know that this ticket has been updated. Otherwise their version property in the database will become stale
+    // new TicketUpdatedPublisher(natsWrapper.client).publish()
 
     // acknowledge the message
     msg.ack();
