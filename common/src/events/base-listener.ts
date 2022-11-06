@@ -18,7 +18,7 @@ export abstract class Listener<T extends Event> {
   // tickets saved in the db if all the instances were to process
   // the same event
   abstract queueGroupName: string;
-  private client: Stan;
+  protected client: Stan;
   protected ackWait = 5 * 1000;
   abstract onMessage(data: T['data'], msg: Message): void;
 
