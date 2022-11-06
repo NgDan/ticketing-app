@@ -1,6 +1,7 @@
 import mongoose, { mongo } from 'mongoose';
 import { OrderStatus } from '@ng-ticketing-app/common';
 import { TicketDoc } from './ticket';
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 export { OrderStatus };
 
 // we have 2 different interfaces (OrderAttrs and OrderDoc) because the attributes
@@ -53,6 +54,9 @@ const orderSchema = new mongoose.Schema(
     },
   }
 );
+
+orderSchema.set('versionKey', 'version');
+orderSchema.plugin(updateIfCurrentPlugin);
 
 orderSchema.statics.build = (attrs: OrderAttrs) => {
   return new Order(attrs);
