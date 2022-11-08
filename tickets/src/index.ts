@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 import { app } from './app';
+import { OrderCancalledListener } from './events/listeners/order-cancelled-listener';
+import { OrderCreatedListener } from './events/listeners/order-created-listener';
 import { natsWrapper } from './nats-wrapper';
 
 const start = async () => {
@@ -54,6 +56,9 @@ const start = async () => {
     process.on('SIGINT', () => natsWrapper.client.close());
     process.on('SIGTERM', () => natsWrapper.client.close());
 
+    new OrderCreatedListener(natsWrapper.client).listen;
+    new OrderCancalledListener(natsWrapper.client).listen();
+
     await mongoose.connect(process.env.MONGO_URI);
     console.log('connected to db');
   } catch (e) {
@@ -67,5 +72,4 @@ const start = async () => {
 // the reason we wrap this in a start setup function is because
 // some versions of node don't support async functions at the
 // top level
-
 start();
