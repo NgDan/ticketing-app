@@ -5,6 +5,7 @@ import {
   NotFoundError,
   requireAuth,
   NotAuthorizedError,
+  BadRequestError,
 } from '@ng-ticketing-app/common';
 import { Ticket } from '../models/ticket';
 import { TicketUpdatedPublisher } from '../events/publishers/ticket-updated-publisher';
@@ -27,6 +28,11 @@ router.put(
 
     if (!ticket) {
       throw new NotFoundError();
+    }
+
+    if (ticket.orderId) {
+      // if the ticket has an orderId it means it's already reserved
+      throw new BadRequestError('Cannot edit a reserved ticket');
     }
 
     // throw not authorized the user that's trying to modify this
