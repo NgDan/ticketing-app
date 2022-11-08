@@ -105,5 +105,5 @@ it('rejects updates if a ticket is reserved', async () => {
     .put(`/api/tickets/${response.body.id}`)
     .set('Cookie', createSessionCookie())
     .send({ title: 'Updated title', price: 200 })
-    .expect(200);
+    .expect(400);
 });
