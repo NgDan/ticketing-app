@@ -1,6 +1,8 @@
 import { OrderStatus } from '@ng-ticketing-app/common';
 import mongoose from 'mongoose';
 
+// the payments service will replicate its own table
+// with orders with the relevant attributes
 interface OrderAttrs {
   id: string;
   version: number;
