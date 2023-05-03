@@ -13,6 +13,8 @@ import {
   currentUser,
   requireAuth,
 } from '@ng-ticketing-app/common';
+import { createChargeRouter } from './routes/new';
+
 const app = express();
 // we set trust proxy to true because traffic is proxied to our application
 // through nginx and express would block it by default
@@ -32,6 +34,8 @@ app.use(
 );
 
 app.use(currentUser);
+
+app.use(createChargeRouter);
 
 // app.all is a combination of app.get, app.post, app.delete, etc
 // it basically responds to any request method
