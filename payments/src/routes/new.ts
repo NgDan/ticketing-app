@@ -9,6 +9,7 @@ import {
   NotAuthorizedError,
   OrderStatus,
 } from '@ng-ticketing-app/common';
+import { stripe } from '../stripe';
 
 const router = express.Router();
 
@@ -29,6 +30,13 @@ router.post(
 
     if (order.status === OrderStatus.Cancelled)
       throw new BadRequestError('Cannot pay for an cancelled order');
+
+    await stripe.charges.create({
+      currency: 'usd',
+      // stripe work on the "smallest currency unit" which is cents in the case of usd
+      amount: order.price * 100,
+      source: token,
+    });
 
     res.send({ success: true });
   }
