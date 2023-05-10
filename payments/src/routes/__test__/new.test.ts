@@ -5,6 +5,7 @@ import { createSessionCookie } from '../../test/setup';
 import { Order } from '../../models/order';
 import { OrderStatus } from '@ng-ticketing-app/common';
 import { stripe } from '../../stripe';
+import { Payment } from '../../models/payment';
 
 jest.mock('../../stripe');
 
@@ -88,5 +89,6 @@ it('returns a 204 with valid inputs', async () => {
   const chargeOptions = (stripe.charges.create as jest.Mock).mock.calls[0][0];
   expect(chargeOptions.source).toEqual('tok_visa');
   expect(chargeOptions.amount).toEqual(ticketPrice * 100);
+  expect(chargeOptions.currency).toEqual('usd');
   expect(chargeOptions.currency).toEqual('usd');
 });

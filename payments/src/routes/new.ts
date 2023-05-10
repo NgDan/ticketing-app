@@ -10,6 +10,7 @@ import {
   OrderStatus,
 } from '@ng-ticketing-app/common';
 import { stripe } from '../stripe';
+import { Payment } from '../models/payment';
 
 const router = express.Router();
 
@@ -31,12 +32,19 @@ router.post(
     if (order.status === OrderStatus.Cancelled)
       throw new BadRequestError('Cannot pay for an cancelled order');
 
-    await stripe.charges.create({
+    const charge = await stripe.charges.create({
       currency: 'usd',
       // stripe work on the "smallest currency unit" which is cents in the case of usd
       amount: order.price * 100,
       source: token,
     });
+
+    // this can be used if we want to display a payment to our customers
+    const payment = Payment.build({
+      orderId,
+      stripeId: charge.id,
+    });
+    await payment.save();
 
     res.status(201).send({ success: true });
   }
