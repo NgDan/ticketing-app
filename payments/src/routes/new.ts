@@ -11,6 +11,8 @@ import {
 } from '@ng-ticketing-app/common';
 import { stripe } from '../stripe';
 import { Payment } from '../models/payment';
+import { PaymentCreatedPublisher } from '../events/publishers/payment-created-publisher';
+import { natsWrapper } from '../nats-wrapper';
 
 const router = express.Router();
 
@@ -46,7 +48,16 @@ router.post(
     });
     await payment.save();
 
-    res.status(201).send({ success: true });
+    // we could also await the publish if we wanted to wait for the
+    // event to be published before we returned the 201 as a response
+    // to this endpoint
+    new PaymentCreatedPublisher(natsWrapper.client).publish({
+      id: payment.id,
+      orderId: payment.orderId,
+      stripeId: payment.stripeId,
+    });
+
+    res.status(201).send({ id: payment.id });
   }
 );
 
